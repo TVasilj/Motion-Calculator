@@ -30,11 +30,12 @@ void setup() {
  
   lcd.begin();                                 // initialize the LCD
   lcd.backlight();                             // Turn on the blacklight and print a message.
+  lcd.setCursor(0,0);                          // sets cursor to column: 0 , row: 0
+  lcd.print(atol(row1));                       // print X value to the screen
   time = millis();
-  Serial.println(0);
 }
 void loop() {
-  if (millis() - time > 100000) {
+  if (millis() - time > 10) {
     time = millis();
     sendDataToESP();                           // function used to send data to ESP app
   }
@@ -45,12 +46,6 @@ void loop() {
       lcdPrint(incomingByte);  
     }
   } 
-
-  lcd.clear();                                 // clear previous values from the screen
-  lcd.setCursor(0,0);                          // sets cursor to column: 0 , row: 0
-  lcd.print("X:");                             // print X: to the screen
-  lcd.setCursor(2,0);                          // sets cursor to column: 0 , row: 0
-  lcd.print(X);                                // print X value to the screen
 }
 
 void sendDataToESP() {
@@ -126,19 +121,30 @@ void lcdPrint(uint8_t incomingByte) {
 
   switch(currentRow) {
   case 1:
-    Serial.println(atol(row1));
+    lcd.clear();                                 // clear previous values from the screen
+    lcd.setCursor(0,0);                          // sets cursor to column: 0 , row: 0
+    lcd.print(atol(row1));
     break;
   case 3:
-    Serial.println(atol(row1));
-    Serial.println(row2);
-    Serial.println(atol(row3));
+    lcd.clear();                                 // clear previous values from the screen
+    lcd.setCursor(0,0);                          // sets cursor to column: 0 , row: 0
+    lcd.print(atol(row1));
+    lcd.setCursor(0,1);                          // sets cursor to column: 0 , row: 1
+    lcd.print(row2);
+    lcd.setCursor(0,2);                          // sets cursor to column: 0 , row: 2
+    lcd.print(atol(row3));
     break;
   case 4:
-    Serial.println(atol(row1));
-    Serial.println(row2);
-    Serial.println(atol(row3));
-    Serial.print("Result is: "); 
-    Serial.println(String(result)); 
+    lcd.clear();                                 // clear previous values from the screen
+    lcd.setCursor(0,0);                          // sets cursor to column: 0 , row: 0
+    lcd.print(atol(row1));
+    lcd.setCursor(0,1);                          // sets cursor to column: 0 , row: 1
+    lcd.print(row2);
+    lcd.setCursor(0,2);                          // sets cursor to column: 0 , row: 2
+    lcd.print(atol(row3));
+    lcd.setCursor(0,2);                          // sets cursor to column: 0 , row: 2
+    lcd.print(result);
+    break;
   }
 }
 
