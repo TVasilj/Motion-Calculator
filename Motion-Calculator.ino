@@ -34,18 +34,17 @@ void setup() {
   lcd.print(atol(row1));                       // print X value to the screen
   time = millis();
 }
+
 void loop() {
-  if (millis() - time > 10) {
-    time = millis();
-    sendDataToESP();                           // function used to send data to ESP app
-  }
+  sendDataToESP(); // function used to send data to ESP app
+  delay(10);
   
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
     if (incomingByte >= 48 && incomingByte <= 57) {
-      lcdPrint(incomingByte);  
+      lcdPrint(incomingByte);
     }
-  } 
+  }
 }
 
 void sendDataToESP() {
@@ -91,13 +90,13 @@ void lcdPrint(uint8_t incomingByte) {
   case '7':
     if (currentRow == 1) {
       currentRow = 3;    
-      strcpy(row2, "+");
+      strcpy(row2, "*");
     }
     break;
   case '8':
     if (currentRow == 1) {
       currentRow = 3;    
-      strcpy(row2, "-");
+      strcpy(row2, "/");
     }
     break;  
   case '9':
@@ -107,10 +106,10 @@ void lcdPrint(uint8_t incomingByte) {
       strcpy(row3, "");
       currentRow = 1;
     } else if (currentRow == 3) {
-      if (strcmp(row2, "-")) {
-        result = atol(row1) + atol(row3);
+      if (strcmp(row2, "/")) {
+        result = atol(row1) * atol(row3);
       } else {
-        result = atol(row1) - atol(row3);
+        result = atol(row1) / atol(row3);
       }
       currentRow = 4;    
     }    
