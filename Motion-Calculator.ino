@@ -21,13 +21,13 @@ void setup() {
   Serial.begin(115200);                        // Initiate serial communication for printing the results on the Serial monitor
   Wire.begin();                                // Initiate the Wire library
   // Set ADXL345 in measuring mode
-  Wire.beginTransmission(ADXL345);             // Start communicating with the device 
+  Wire.beginTransmission(ADXL345);             // Start communicating with the device
   Wire.write(0x2D);                            // Access/ talk to POWER_CTL Register - 0x2D
   // Enable measurement
-  Wire.write(8);                               // (8dec -> 0000 1000 binary) Bit D3 High for measuring enable 
+  Wire.write(8);                               // (8dec -> 0000 1000 binary) Bit D3 High for measuring enable
   Wire.endTransmission();
   delay(10);
- 
+
   lcd.begin();                                 // initialize the LCD
   lcd.backlight();                             // Turn on the blacklight and print a message.
   lcd.setCursor(0,0);                          // sets cursor to column: 0 , row: 0
@@ -36,9 +36,9 @@ void setup() {
 }
 
 void loop() {
-  sendDataToESP(); // function used to send data to ESP app
+  sendDataToESP();                             // function used to send data to ESP app
   delay(10);
-  
+
   if (Serial.available() > 0) {
     incomingByte = Serial.read();
     if (incomingByte >= 48 && incomingByte <= 57) {
@@ -59,7 +59,7 @@ void sendDataToESP() {
   Y = Y/256;
   Z = ( Wire.read()| Wire.read() << 8);        // Z-axis value
   Z = Z/256;
-  
+
   Serial.print(X);
   Serial.print("\t");
   Serial.print(Y);
@@ -89,30 +89,21 @@ void lcdPrint(uint8_t incomingByte) {
     break;
   case '7':
     if (currentRow == 1) {
-      currentRow = 3;    
+      currentRow = 3;
       strcpy(row2, "*");
     }
     break;
   case '8':
-    if (currentRow == 1) {
-      currentRow = 3;    
-      strcpy(row2, "/");
+    if (currentRow == 3) {
+      result = atol(row1) * atol(row3);
+      currentRow = 4;
     }
-    break;  
+    break;
   case '9':
-    if (currentRow == 1 || currentRow == 4) {
       strcpy(row1, "");
       strcpy(row2, "");
       strcpy(row3, "");
-      currentRow = 1;
-    } else if (currentRow == 3) {
-      if (strcmp(row2, "/")) {
-        result = atol(row1) * atol(row3);
-      } else {
-        result = atol(row1) / atol(row3);
-      }
-      currentRow = 4;    
-    }    
+      currentRow = 1
     break;
   default:
     break;
